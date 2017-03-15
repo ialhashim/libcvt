@@ -103,6 +103,7 @@ namespace libcvd{
 					}
 					i++;
 				}
+
 				else if (
 					fscanf(off_file, "%[#]", &tic_tac_toe) == 1)
 				{
