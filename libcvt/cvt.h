@@ -24,6 +24,7 @@ namespace libcvd{
 			c[0] = x; c[1] = y; c[2] = z;
 			vertColor.push_back(c);
 		}
+<<<<<<< HEAD
 
 		void load_obj(std::string filename) {
 			using namespace std;
@@ -159,6 +160,8 @@ namespace libcvd{
 			fclose(off_file);
 			return true;
 		}
+=======
+>>>>>>> 7ae14886754d9e8aa0b6c81c7bfdd5c1d84f41f0
     };
 
     void computeCVT(SimpleMesh & m, int regions = 20, int iterations = 200)
