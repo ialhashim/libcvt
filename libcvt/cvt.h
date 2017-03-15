@@ -3,6 +3,9 @@
 #include "lloyd_euclidean_cvd.h"
 
 namespace libcvd{
+	inline unsigned RGB(double x) {
+		return  (x < 0) ? 0 : (x > 255) ? 255 : unsigned(x);
+	}
     struct SimpleMesh{
         std::vector<std::vector<double> > verts;
 		std::vector<std::vector<int> > faces;
@@ -66,7 +69,7 @@ namespace libcvd{
 			if (has_normals)
 				;// N.resize(number_of_vertices);
 			if (has_vertexColors)
-				;// C.resize(number_of_vertices);
+				vertColor.resize(number_of_vertices);
 			
 			printf("%s %d %d %d\n",(has_normals ? "NOFF" : "OFF"),number_of_vertices,number_of_faces,number_of_edges);
 			// Read vertices
@@ -91,13 +94,14 @@ namespace libcvd{
 						//N[i] = normal;
 					}
 
-					/*if (has_vertexColors)
+					if (has_vertexColors)
 					{
-						C[i].resize(3);
-						C[i][0] = nx / 255.0;
-						C[i][1] = ny / 255.0;
-						C[i][2] = nz / 255.0;
-					}*/
+						std::vector<double> color(3);
+						color[0] = nx / 255.0;
+						color[1] = ny / 255.0;
+						color[2] = nz / 255.0;
+						vertColor[i] = color;
+					}
 					i++;
 				}
 				else if (
@@ -155,6 +159,33 @@ namespace libcvd{
 				}
 			}
 			fclose(off_file);
+			return true;
+		}
+		
+		bool writeOFF(string filename) {
+			std::ofstream s(filename);
+			bool hasColor = !vertColor.empty();
+			if (!hasColor) {
+				s << "OFF\n" << verts.size() << " " << faces.size() << " 0\n";
+			}
+			else {
+				s << "COFF\n" << verts.size() << " " << faces.size() << " 0\n";
+			}
+			
+			for (unsigned i = 0; i < verts.size(); ++i) {
+				if (hasColor) {
+					s << verts[i][0] << " " << verts[i][1] << " " << verts[i][2] << " ";
+					s << RGB(vertColor[i][0] * 255.0) << " " << RGB(vertColor[i][1] * 255.0) << " " << RGB(vertColor[i][2] * 255.0) << std::endl;
+				}
+				else {
+					s << verts[i][0] << " " << verts[i][1] << " " << verts[i][2] << " ";
+				}
+			}
+
+			for (unsigned i = 0; i < faces.size(); ++i) {
+				s << "3 " << faces[i][0] << " " << faces[i][1] << " " << faces[i][2] << std::endl;
+			}
+			s.close();
 			return true;
 		}
     };
