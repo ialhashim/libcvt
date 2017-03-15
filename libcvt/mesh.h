@@ -198,7 +198,8 @@ void Mesh::link_mesh()
         (*f)->link_star_verts();
 
     for (EdgeIter e = ec_.begin(); e != ec_.end(); e++) {
-        Hedge* h = (*e)->hedge(0);
+		Hedge* h = nullptr;
+		h = (*e)->hedge(0);
         if (h->is_bdry() && h->face() != NULL)
             h->dst()->set_star(h);
         else if (h->face() == NULL)
